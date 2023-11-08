@@ -1,5 +1,74 @@
 # Logistic Regression
 
+Logistic regression is one of the most popular ways to fit models for categorical data, especially for binary response data. It is the most important (and probably most used) member of a class of models called generalized linear models.
+Unlike linear regression, logistic regression can directly predict probabilities (values that are restricted to the (0,1) interval); furthermore, those probabilities are well-calibrated when compared to the probabilities predicted by some other classifiers, such as Naive Bayes.
+Logistic regression preserves the marginal probabilities of the training data.
+The coefficients of the model also provide some hint of the relative importance of each input variable.
+[Derivative Logistic Regression](https://win-vector.com/2011/09/14/the-simpler-derivation-of-logistic-regression/)
+
+The **logistic regression model assumes that the log-odds of an observation y can be expressed as a linear function of the K input variables** x:
+
+$ \log \frac {P(x)}{ 1 - P(x)} =  \Sigma_{j=0}^k b_j \sdot x_j$
+
+The left hand side of the above equation is called the logit of P (hence, the name logistic regression).
+
+If we take exponents on both side:
+
+$ \frac {P(x)}{ 1 - P(x)} = \exp (\Sigma_{j=0}^k b_j \sdot x_j) $
+
+$ = \Pi_{j=0}^k \exp(b_j \sdot x_j) $
+
+This eqn shows that logistic models are multiplicative in their input unlike additive of linear model.
+The value exp(bj) tells us how the odds of the response being “true” increase (or decrease) as xj increases by one unit, all other things being equal.
+For example, suppose bj = 0.693. Then exp(bj) = 2. If xj is a numerical variable (say, age in years), then every year’s increase in age doubles the odds of the response being true — all other things being equal.
+If xj is a binary variable (say, sex, with female coded as 1 and male as 0), then if the subject is female, then the response is two times more likely to be true than if the subject is male, all other things being equal.
+
+log likelihood of predicted probabilities of the N individual observations:
+
+$ \text{Log likehood} (X|P) = \sum_{i=1, y_i =1}^N log P(x_i) + \sum_{i=0, y_i =0}^N log (1 - P(x_i)) $
+
+Maximizing the log-likelihood will maximize the likelihood.
+As a side note, the $\text{quantity} − 2 \ast \text{log-likelihood}$ is called the **deviance of the model**.
+It is analogous to the residual sum of squares (RSS) of a linear model. Ordinary least squares minimizes RSS; **logistic regression minimizes deviance**.
+A useful goodness-of-fit heuristic for a logistic regression model is to compare the deviance of the model with the so-called **null deviance**: the deviance of the constant model that returns only the global response probability for every data point.
+One minus the ratio of deviance to null deviance is sometimes called pseudo-R2, and is used the way one would use R2 to evaluate a linear model.
+
+$\text{psuedo-R}^2 = 1 - \frac{\text{deviance}}{\text{null deviance}}$
+
+According to the eqn,
+
+$ \Sigma_{i=1}^N y_i \sdot x_i - P_i \sdot x_i = 0 $
+
+which we got after taking gradient of log likelihood function and solving the equation.
+Notice that the equations to be solved are in terms of the probabilities P (which are a function of b), not directly in terms of the coefficients b themselves. This means that logistic models are coordinate-free: for a given set of input variables,
+the probabilities returned by the model will be the same even if the variables are shifted, combined, or rescaled. Only the values of the coefficients will change.
+
+Question - What is meant by given statement that logistic regression preserves the marginal probabilities of the training data. <br/>
+Answer - The other thing to notice from the above equations is that the sum of probability mass across each coordinate of the $x_i$ vectors is equal to the count of observations with that coordinate value for which the response was true. <br/>
+$\Sigma_{i=1, x_{ij}=1}^N y_i = \Sigma_{i=1, x_{ij}=1}^N P_i$ <br/>
+Sum of all the probability mass over the entire training set will equal the number of “true” responses in the training set.
+
+## Solving for the Coefficient Using Newton's Method
+
+Applying [Newtons Method](./../optimisation/second_order.md) to solve for optimum value of b. In the case of logistic regression, we are trying to find the values of b that make the gradient of the log-likelihood function equal to zero.
+In this case, function to be minimized is the negative of the log-likelihood function, so finding the values of b that make the gradient of the negative log-likelihood function equal to zero requires double differentiation of the log-likelihood function.
+This introduce hessian matrix which is equivalent to $H = XWX^T$ and $W = P_i(1-P_i)$. <br/>
+For each iteration, the $\varDelta$ is updated by: <br/>
+$\varDelta_k = (XWX^T)^{-1}X(y-P_k)$ <br/>
+where W is the current matrix of derivatives, y is the vector of observed responses, and Pk is the vector of probabilities as calculated by the current estimate of b.
+$$
+\begin{align*}
+y & = X^T \times b \\
+Xy & = XX^Tb \\
+b & = (X^TX)^{-1} \times X^Ty
+\end{align*}
+$$
+
+Looking at the two, $\varDelta$ seems similar to solution of weighted least square problem. Here response or output is difference between the observed response and its current estimated probability of being true. Technique of solving logistic regression is called iteratively re-weighted least squares.
+
+As we can see in newton's method we require to calculate inverse of Hessian matrix. This is computationally expensive and if input variables are correlated then Hessian H will be ill-conditioned. This will result in large error bars (or “loss of significance”) around the estimates of certain coefficients.
+It can also result in coefficients with excessively large magnitudes, and often the wrong sign. Regularization can also be used to penalized large coefficient and bound them.
+
 ## Activation Function
 
 ### Drawbacks of Sigmoid and Tangent Activation function for Binary Classification
@@ -45,6 +114,7 @@ def C(y, a):
 `
 tanh(x) = 2sigmoid(2x) - 1
 `
+
 Its good for approximating sign function. For tanh activation function, the gradient saturates rapidly at increasingly large absolute values of the
 argument. Although, this loss function is nonconvex, we can still apply GD or Newton to minimize
 it. [Logistic Regression](https://studentweb.uvic.ca/~leizhao/MLSPnotes/FL/Logistic%20Regression.pdf)
@@ -96,13 +166,7 @@ This problem arise if m doesn't lie in $ \in \brace +1, -1 \rbrace $ ( my thinki
 
 And of course we would like this to hold for every point.  To find weights that satisfy this set of $P$ equalities as best as possible we could - as we did previously with linear regression - square the difference between both sides of each and average them, giving the Least Squares function
 
-\begin{equation}
-g(\mathbf{w}) = \frac{1}{P}\sum_{p=1}^P \left(\text{step}\left(\mathring{\mathbf{x}}_{\,}^T\mathbf{w}^{\,}\right)  - y_p \right)^2
-\end{equation}
-
-\[
-g(\mathbf{w}) = \frac{1}{P}\sum_{p=1}^P \left(\text{step}\left(\mathring{\mathbf{x}}_{\,}^T\mathbf{w}^{\,}\right)  - y_p \right)^2
-\]
+$g(\mathbf{w}) = \frac{1}{P}\sum_{p=1}^P \left(\text{step}\left(\mathring{\mathbf{x}}_{\,}^T\mathbf{w}^{\,}\right)  - y_p \right)^2$
 
 which we can try to minimize in order to recover weights that satisfy our desired equalities. If we can find a set of weights such that $g(\mathbf{w}) = 0$ then all $P$ equalities above hold true, otherwise some of them do not.
 
@@ -165,7 +229,12 @@ $L_{log}(m) =  log(1+e^{-m}) $
 
 Log loss as function of margin. At $ m = 1$ loss is zero. Since this is correct classification. Loss at m = 0 to be 1.
 
-## Questions
+## Key Points
 
-- why mean square error form line like this?
-- is tanh logic is correct?
+– Logistic regression is coordinate-free: translations, rotations, and rescaling of the input variables will not affect the resulting probabilities.
+
+– Logistic regression preserves the marginal probabilities of the training data.
+
+– Overly large coefficient magnitudes, overly large error bars on the coefficient estimates, and the wrong sign on a coefficient could be indications of correlated inputs.
+
+– Coefficients that tend to infinity could be a sign that an input is perfectly correlated with a subset of your responses. Or put another way, it could be a sign that this input is only really useful on a subset of your data, so perhaps it is time to segment the data.
