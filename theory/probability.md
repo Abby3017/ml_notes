@@ -7,6 +7,8 @@ It then “finds” model parameters or makes predictions on unseen data using t
 
 $P(A, B) = P(A|B)P(B)$
 joint probability of A and B is the probability of B times the probability of A given B.
+A joint model gives probabilities P(A,B) and tries to maximize this joint likelihood. Just by counting and getting their proability get us the weight.
+Relative frequencies give maximum joint likelihood on categorical data.
 
 if A and B are independent events, then $P(A,B) = P(A) P(B)$
 
@@ -19,6 +21,7 @@ $P(A|B) = \frac {P(A, B)}{P(B)}$
 The intuition of the above formulas is as follows: If we know that event B has already occurred and we want to know the probability of A under this premise, then we compute the probability that A and B occur relative to the probability that B occurs.
 In other words, we can exclude the possibility that B does not occur.
 Computing p(A|B) comes down to calculating the fraction of the intersection of A and B out of B.
+It is harder to do and more closely related to classification error.
 
 ## Chain rule of Probability
 
