@@ -10,7 +10,12 @@ The **logistic regression model assumes that the log-odds of an observation y ca
 
 $ \log \frac {P(x)}{ 1 - P(x)} =  \Sigma_{j=0}^k b_j \sdot x_j$
 
-The left hand side of the above equation is called the logit of P (hence, the name logistic regression).
+The left hand side of the above equation is called the logit of P (hence, the name logistic regression). This eqn is derived to find linear regression to find probability for classification. We need some function which has bounded output and input changes should multiply the probability with fixed output.
+The easiest modification of log p which has an unbounded range is the logistic (or logit) transformation.
+
+The distance calculated from decision boundary is : <br/>
+$ \frac{b}{||\overrightarrow{w}||} + \overrightarrow{x} \sdot \frac{\overrightarrow{w}}{||\overrightarrow{w}||} $ <br/>
+Class probability depends on the distance from the decision boundary. [LR](https://www.stat.cmu.edu/~cshalizi/350/lectures/26/lecture-26.pdf)
 
 If we take exponents on both side:
 
@@ -229,6 +234,12 @@ $L_{log}(m) =  log(1+e^{-m}) $
 
 Log loss as function of margin. At $ m = 1$ loss is zero. Since this is correct classification. Loss at m = 0 to be 1.
 
+## Issues with Logistic Regression
+
+- One caution about using maximum likelihood to fit logistic regression is that it can seem to work badly when the training data can be linearly separated. In this case, the maximum likelihood estimate of the logistic regression parameters will be infinite.
+The reason is that, to make the likelihood large, $p(\overrightarrow{x}_i)$ should be large when $y_i = 1$, and p should be small when $y_i = 0$. If $b, \overrightarrow{w}$ is a set of parameters which perfectly classifies the training data, then $b \sdot c, c \sdot \overrightarrow{w}$ is too,
+for any c > 1, but in a logistic regression the second set of parameters will have more extreme probabilities, and so a higher likelihood.
+
 ## Key Points
 
 – Logistic regression is coordinate-free: translations, rotations, and rescaling of the input variables will not affect the resulting probabilities.
@@ -238,3 +249,14 @@ Log loss as function of margin. At $ m = 1$ loss is zero. Since this is correct 
 – Overly large coefficient magnitudes, overly large error bars on the coefficient estimates, and the wrong sign on a coefficient could be indications of correlated inputs.
 
 – Coefficients that tend to infinity could be a sign that an input is perfectly correlated with a subset of your responses. Or put another way, it could be a sign that this input is only really useful on a subset of your data, so perhaps it is time to segment the data.
+
+- The logistic regression and the GAM are both models for the response conditional on the inputs, and are agnostic about how the inputs are distributed, or even whether it’s meaningful to talk about their distribution. [LR](https://www.stat.cmu.edu/~cshalizi/350/lectures/26/lecture-26.pdf)
+
+## Extra Reading
+
+Logistic regression is part of a broader family of generalized linear models (GLMs), where **the conditional distribution of the response falls in some parametric family, and the parameters are set by the linear predictor**.
+Ordinary, least-squares regression is the case where response is Gaussian, with mean equal to the linear predictor, and constant variance.
+Logistic regression is the case where the response is binomial, with n equal to the number of data-points with the given ~x (often but not always 1), and p is given by sigmoid function.
+Changing the relationship between the parameters and the linear predictor is called changing the **link function**.
+For computational reasons, the link function is actually the function you apply to the mean response to get back the linear predictor, rather than the other way around i.e linear function to represent log odd. There are thus other forms of binomial regression besides logistic regression.
+There is also Poisson regression (appropriate when the data are counts without any upper limit), gamma regression, etc. [LR](https://www.stat.cmu.edu/~cshalizi/350/lectures/26/lecture-26.pdf)
