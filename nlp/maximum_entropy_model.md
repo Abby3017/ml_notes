@@ -6,6 +6,19 @@ It is a classical machine learning approach.
 If we are given some data and told to decide, we could think of attributes about the data,i.e.,  features. Some of these features might be more important than others. We apply a weight to each feature found in the data, and we add up all of the features.
 Finally, the weighted sum is normalized to give a fraction between 0 and 1. We can use this fraction to tell us the score of how confident we might be in making a decision.
 
+According to ME principle, a model with good generalization capability is expected to have as less extra hypothesis on data (X, Y ) as possible.
+Softmax regression assumes independent observations when applying ME principle
+
+This document explains how max ent models is derived from the conditional probability [distribution](https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1162/handouts/MaxentTutorial-16x9-MEMMs-Smoothing.pdf).
+
+(Original Maximum Entropy Model) Supposing the dataset has input X and label Y , the task is to find a good prediction of Y using X. The prediction $\hat{Y}$ needs to maximize the conditional entropy $H(\hat{Y}|X)$ while preserving the same distribution with data (X, Y ).
+$$
+\begin{align*}
+\text{min} -H(\hat{Y}|X) \\
+s.t \quad P(\hat{Y}|X) = P(Y|X)
+\end{align*}
+$$
+
 ## Log Linear Model
 
 The log-linear model uses a linear combination of features and weights to find the predicted label with maximum log-likelihood.
@@ -76,3 +89,11 @@ In Max Entropy the feature is represented with f(x,y), it mean we can design fea
 ## NLP examples
 
 In NLP task like POS, it is common to design feature's combining labels. For example: current word ends with "ous" and next word is noun. it can be feature to predict whether the current word is adjective.
+
+## UNDERSTANDING DEEP LEARNING GENERALIZATION BY MAXIMUM [ENTROPY](https://arxiv.org/pdf/1711.07758.pdf)
+
+This paper attempts to explain generalisation of DNN using maximum entropy. DNN is then regarded as approximating the feature conditions with multilayer feature learning, and proved to be a recursive solution towards maximum entropy principle.
+It also shows how shortcuts and regularization improves model generalization explained by maximum entropy.
+
+Models fulfilling the principle of ME make least hypothesis beyond the stated prior data, and thus lead to least biased estimate possible on the given information.
+Different selections of feature functions lead to different instantiations of maximum entropy models. The most simple and wellknown instantiation is that ME principle invents identical formulation of softmax regression by selecting certain feature functions and treating data as conditionally independent.
