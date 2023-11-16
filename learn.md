@@ -7,3 +7,4 @@ The log form is an attempt to linearise the NB. Thus, in NB-SVM , the original f
 4. Autograd based differentiation -- PyTorch and TensorFlow
 5. Decision Tree
 6. Random Forest
+7. Why writing is better https://addyosmani.com/blog/write-learn/
