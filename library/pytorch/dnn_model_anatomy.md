@@ -1,4 +1,4 @@
-# Efficient Training
+# DNN model Anatomy
 
 Training large models on GPUS efficiently requires know-how of operation and optimization available.
 
