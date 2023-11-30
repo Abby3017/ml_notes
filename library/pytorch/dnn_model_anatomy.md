@@ -1,6 +1,8 @@
 # DNN model Anatomy
 
-Training large models on GPUS efficiently requires know-how of operation and optimization available.
+Training large models on GPUs efficiently requires know-how of operation and optimization available.
+
+[HuggingFace Read](https://huggingface.co/docs/transformers/model_memory_anatomy)
 
 ## Model Training Anatomy
 
