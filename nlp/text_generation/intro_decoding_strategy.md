@@ -22,7 +22,6 @@ $w_t = argmax_w P(w|w_{t:t-1})$
 The generated words following the context is reasonable, but the overall coherence of the generated text is not good. This problem occurs in greedy and beam search.
 The major drawback of greedy search though is that it misses high probability words hidden behind a low probability word.
 
-
 ### Beam Search
 
 [It](https://huggingface.co/blog/how-to-generate#beam-search) reduces the risk of missing high probability words by keeping most likely **num_beams** hypothesis at each time step and eventually choosing the hypothesis that has the overall probability.
