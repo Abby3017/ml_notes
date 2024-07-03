@@ -36,6 +36,10 @@ The Update vector will then undergo element-wise multiplication with the previou
 <br/>
 $\text{u} = \text{gate}_{\text{update}} \odot h_{t-1} $
 
+### Pytorch initialization of GRU Hidden State
+
+
+
 ### Final Output
 
 The final output is computed by multiplying the update vector with the previous hidden state and the reset vector with the candidate vector.

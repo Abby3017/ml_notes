@@ -11,25 +11,31 @@ from plotting.plot_simple import plot_dataset
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
+
 def sigmoid_derivative(z: npt.NDArray) -> npt.NDArray:
     return sigmoid(z) * (1 - sigmoid(z))
 
-def calculate_accuracy(theta: npt.NDArray, X: npt.NDArray, y: npt.NDArray, activation : Callable):
+
+def calculate_accuracy(theta: npt.NDArray, X: npt.NDArray, y: npt.NDArray, activation: Callable):
     y_pred = activation(X.dot(theta))
     y_pred[y_pred >= 0.5] = 1
     y_pred[y_pred < 0.5] = 0
     return np.mean(y_pred == y)
 
 # log loss (this works)
+
+
 def cost_function_sigmoid(theta: npt.NDArray, X: npt.NDArray, y: npt.NDArray):
     n = X.shape[0]
     y_pred = sigmoid(X.dot(theta))
     cost = -1 / n * np.sum(y * np.log(y_pred) + (1 - y) * np.log(1 - y_pred))
     return cost
 
+
 def logisitic_gradient(X: npt.NDArray, y_pred: npt.NDArray, y: npt.NDArray):
     n = X.shape[0]
     return 1 / n * X.T.dot(y_pred - y)
+
 
 def gradient_descent(theta, X, y, alpha, num_iters, activation_gradient: Callable, activation: Callable, cost_function: Callable):
     n = X.shape[0]
@@ -50,15 +56,18 @@ def gradient_descent(theta, X, y, alpha, num_iters, activation_gradient: Callabl
 
 # mean square loss with normalising gradient
 
+
 def cost_function_sigmoid_mean_square(theta: npt.NDArray, X: npt.NDArray, y: npt.NDArray):
     n = X.shape[0]
     y_pred = sigmoid(X.dot(theta))
     cost = 1 / n * np.sum(np.square(y_pred - y))
     return cost
 
+
 def logistic_mean_square_gradient(X: npt.NDArray, y_pred: npt.NDArray, y: npt.NDArray):
     n = X.shape[0]
     return 2 / n * X.T.dot((y_pred - y) * (y_pred * (1 - y_pred)))
+
 
 def normalised_gradient_descent(theta, X, y, alpha, num_iters, activation: Callable):
     n = X.shape[0]
@@ -81,21 +90,28 @@ def normalised_gradient_descent(theta, X, y, alpha, num_iters, activation: Calla
     return best_theta, J_history, J_accuracy
 
 # for tangent, labels are -1 and 1
+
+
 def tangent(x: npt.NDArray):
-    x = np.clip(x, -740, 700) # https://stackoverflow.com/questions/40726490/overflow-error-in-pythons-numpy-exp-function to avoid overflow
+    # https://stackoverflow.com/questions/40726490/overflow-error-in-pythons-numpy-exp-function to avoid overflow
+    x = np.clip(x, -740, 700)
     y_pred = (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
-    output = 0.5 * (y_pred + 1) # simple transformation to map the range (-1, 1) to (0, 1):
+    # simple transformation to map the range (-1, 1) to (0, 1):
+    output = 0.5 * (y_pred + 1)
     return y_pred, output
 
-def tangent_derivative(x:npt.NDArray):
+
+def tangent_derivative(x: npt.NDArray):
     return 1 - np.square(tangent(x))
+
 
 def cost_function_tang(X: npt.NDArray, y: npt.NDArray, theta: npt.NDArray):
     n = X.shape[0]
     y_pred, _ = tangent(X.dot(theta))
-    y_pred = np.clip(y_pred, 1e-7, None) # to avoid log(0)
+    y_pred = np.clip(y_pred, 1e-7, None)  # to avoid log(0)
     cost = -1 / n * np.sum(y * np.log(y_pred) + (1 - y) * np.log(1 - y_pred))
     return cost
+
 
 def tangent_gradient(X: npt.NDArray, y: npt.NDArray, theta: npt.NDArray):
     n = X.shape[0]
@@ -105,6 +121,7 @@ def tangent_gradient(X: npt.NDArray, y: npt.NDArray, theta: npt.NDArray):
     gradient = (((y/y_pred) * -1) + (1 - y)/(1 - y_pred)) * (1 - y_pred**2)
     gradient = np.dot(X.T, gradient)
     return gradient / n
+
 
 def get_wrong_prediction(theta, X, y, activation: Callable):
     X_train = augment_data(X)
@@ -118,21 +135,25 @@ def get_wrong_prediction(theta, X, y, activation: Callable):
 
 # mean square loss with normalising gradient
 
+
 def cost_function_tang_mean_square(X: npt.NDArray, y: npt.NDArray, theta: npt.NDArray):
     n = X.shape[0]
     y_pred, _ = tangent(X.dot(theta))
     cost = 1 / n * np.sum(np.square(y_pred - y))
     return cost
 
+
 def tangent_mean_square_gradient(X: npt.NDArray, y_pred: npt.NDArray, y: npt.NDArray):
     n = X.shape[0]
     return 2 / n * X.T.dot((y_pred - y) * (1 - y_pred**2))
 
-def calculate_accuracy_tang(theta: npt.NDArray, X: npt.NDArray, y: npt.NDArray, activation : Callable):
+
+def calculate_accuracy_tang(theta: npt.NDArray, X: npt.NDArray, y: npt.NDArray, activation: Callable):
     _, output = activation(X.dot(theta))
     output[output >= 0.5] = 1
     output[output < 0.5] = 0
     return np.mean(output == y)
+
 
 def normalised_gradient_descent_tangent(theta, X, y, alpha, num_iters, activation: Callable):
     n = X.shape[0]
