@@ -23,6 +23,15 @@ In other words, we can exclude the possibility that B does not occur.
 Computing p(A|B) comes down to calculating the fraction of the intersection of A and B out of B.
 It is harder to do and more closely related to classification error.
 
+### Factorization
+
+$P(A| B,C) \varpropto P(A|B) * P(A|C)$
+
+Given any two nonzero real numbers 𝑥 and 𝑦 , it is always the case that $𝑥 \varpropto 𝑦$ : just choose the constant of proportionality to be $𝑥𝑦$. For independent 𝐵 and 𝐶 , it is always the case that
+$𝑃(𝐴𝐵𝐶)\varpropto𝑃(𝐴𝐵)𝑃(𝐴𝐶)$ and hence $𝑃(𝐴∣𝐵,𝐶)\varpropto𝑃(𝐴∣𝐵)𝑃(𝐴∣𝐶)$.
+
+$P(A,B|C) = P(A|B,C)P(B|C)$ if A and B are independent to each other then $P(A,B|C) = P(A|C)P(B|C)$
+
 ## Chain rule of Probability
 
 chain rule of two random events A and B is:
